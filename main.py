@@ -79,6 +79,17 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# --- EKLEMEN GEREKEN SİHİRLİ KISIM (CORS AYARI) ---
+# Bu kısım FlutterFlow'un ve tarayıcıların API'ye erişmesine izin verir.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Tüm sitelere kapıyı açar.
+    allow_credentials=True,
+    allow_methods=["*"],  # GET, POST her şeye izin verir.
+    allow_headers=["*"],  # API Key vb. başlıklara izin verir.
+)
+# ----------------------------------------------------
+
 # --- Middleware for Request Logging ---
 @app.middleware("http")
 async def log_requests(request, call_next):
@@ -94,16 +105,6 @@ async def log_requests(request, call_next):
     logger.info(f"rid={idem} İstek tamamlandı: {response.status_code}, Süre: {formatted_process_time}")
     
     return response
-# ------------------------------------
-
-# CORS ayarları (gerekirse)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Tüm domainlerden istek kabul et (üretimde kısıtlayın)
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # API güvenliği için bir header belirliyoruz.
 API_KEY_NAME = "X-API-Key"
@@ -1083,4 +1084,5 @@ if __name__ == "__main__":
     # Dosya kaydetmeden görüntüle
     fig1.show()
     fig2.show()
+
     fig3.show()
